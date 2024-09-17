@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: entrypoint
+
+  cloud:
+    loadbalancer:
+      cache:
+        ttl: 60s
+
+
+ # the config is ready for use but is not activated
+ # config:
+ #   import: configserver:http://localhost:8888
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8080
