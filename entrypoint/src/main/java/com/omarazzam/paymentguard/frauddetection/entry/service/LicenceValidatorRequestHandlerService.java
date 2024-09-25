@@ -33,7 +33,7 @@ public class LicenceValidatorRequestHandlerService {
             log.info(" Sending request to license validator {} " , message);
 
              try {
-                 send(message);
+//                 send(message);
              }catch (Exception e) {
                  log.error(e);
                  throw e;

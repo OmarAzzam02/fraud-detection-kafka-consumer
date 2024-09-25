@@ -28,7 +28,7 @@ public class EvaluateMessageService {
 
 
     public boolean evaluateMessage(PaymentTransactionEvaluation message) {
-      //  log.info("Evaluate message");
+
 
         boolean isFraudulent = cache.getCashe().parallelStream()
                 .anyMatch(scenario -> evaluate(message, scenario));

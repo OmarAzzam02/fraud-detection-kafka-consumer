@@ -2,7 +2,6 @@ package com.omarazzam.paymentguard.frauddetection.scenariomanager.service;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.omarazzam.paymentguard.frauddetection.scenariomanager.dao.UserScenarioDAO;
 import com.omarazzam.paymentguard.frauddetection.scenariomanager.dto.UserScenario;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +23,8 @@ public class UserScenarioServiceImpl implements UserScenarioService {
     @Autowired
     RestTemplate restTemplate;
 
-    @Autowired
-    UserScenarioDAO db;
+//    @Autowired
+//    UserScenarioDAO db;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -42,7 +41,7 @@ public class UserScenarioServiceImpl implements UserScenarioService {
         }
         public void addScenarioToDataBase( UserScenario senario){
           // add to database
-            db.insertScenario(senario);
+//            db.insertScenario(senario);
         }
 
 

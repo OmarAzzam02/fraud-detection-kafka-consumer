@@ -6,6 +6,7 @@ import com.omarazzam.paymentguard.evaluation.entity.message.PaymentTransactionEv
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -30,19 +31,21 @@ public class ReceiveMessage {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    KafkaTemplate<String , Object> kafkaTemplate;
+
 
     @KafkaListener(topics = "transaction", groupId = "evaluation-service")
-    public void receiveMessage(String value, Acknowledgment acknowledgment) {
+    public void receiveMessage(String value) {
 
         log.info("Received message from KAFKA {} " , value);
         try {
         PaymentTransactionEvaluation message = objectMapper.readValue(value , PaymentTransactionEvaluation.class);
 
         boolean result = evaluateMessageService.evaluateMessage(message);
-        FraudStatus flag = result ? FraudStatus.FRAUD : FraudStatus.NOTFRAUD;
-        message.setFlag(flag);
+        message.setFlag(result ? FraudStatus.FRAUD : FraudStatus.NOTFRAUD);
         sendToReader(message);
-        acknowledgment.acknowledge();
+
 
         } catch (final Exception e) {
             log.error(e);
@@ -52,14 +55,6 @@ public class ReceiveMessage {
 
     @Async
     public void sendToReader(PaymentTransactionEvaluation message) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                log.info("Sending  message back to reader ");
-                restTemplate.postForEntity(READER_URL, message, Void.class);
-            } catch (Exception e) {
-
-                throw new RuntimeException("Failed to send message to reader", e);
-            }
-        });
+        kafkaTemplate.send("evaluated-transactions" , message);
     }
 }
